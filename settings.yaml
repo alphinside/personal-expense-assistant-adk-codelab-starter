@@ -1,0 +1,5 @@
+GCLOUD_LOCATION: "us-central1"
+GCLOUD_PROJECT_ID: "expense-assistant-477505"
+BACKEND_URL: "http://localhost:8081/chat"
+STORAGE_BUCKET_NAME: "fitness-assistant-receipts"
+DB_COLLECTION_NAME: "fitness-assistant-receipts"
