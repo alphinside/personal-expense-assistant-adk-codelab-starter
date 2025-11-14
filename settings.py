@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+from pydantic import field_validator
 from pydantic_settings import (
     BaseSettings,
     SettingsConfigDict,
@@ -39,13 +40,20 @@ class Settings(BaseSettings):
 
     GCLOUD_LOCATION: str
     GCLOUD_PROJECT_ID: str
+    STORAGE_BUCKET_NAME: str
     BACKEND_URL: str = "http://localhost:8081/chat"
-    STORAGE_BUCKET_NAME: str = "personal-expense-assistant-receipts"
     DB_COLLECTION_NAME: str = "personal-expense-assistant-receipts"
 
     model_config = SettingsConfigDict(
         yaml_file="settings.yaml", yaml_file_encoding="utf-8"
     )
+
+    @field_validator("STORAGE_BUCKET_NAME", mode="after")
+    @classmethod
+    def sanitize_gs_prefix(cls, v: str) -> str:
+        if v.startswith("gs://"):
+            return v.removeprefix("gs://")
+        return v
 
     @classmethod
     def settings_customise_sources(
