@@ -13,7 +13,7 @@
 # limitations under the License.
 
 GCLOUD_LOCATION: "us-central1"
-GCLOUD_PROJECT_ID: "your_gcloud_project_id"
+GCLOUD_PROJECT_ID: "your-project-id"
 BACKEND_URL: "http://localhost:8081/chat"
-STORAGE_BUCKET_NAME: "personal-expense-assistant-receipts"
+STORAGE_BUCKET_NAME: "personal-expense-{your-project-id}"
 DB_COLLECTION_NAME: "personal-expense-assistant-receipts"
