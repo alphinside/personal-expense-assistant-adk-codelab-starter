@@ -33,7 +33,7 @@ GCS_BUCKET_CLIENT = storage.Client(project=SETTINGS.GCLOUD_PROJECT_ID).get_bucke
 )
 
 
-def store_uploaded_image_as_artifact(
+async def store_uploaded_image_as_artifact(
     artifact_service: GcsArtifactService,
     app_name: str,
     user_id: str,
@@ -59,7 +59,7 @@ def store_uploaded_image_as_artifact(
     hasher = hashlib.sha256(image_byte)
     image_hash_id = hasher.hexdigest()[:12]
 
-    artifact_versions = artifact_service.list_versions(
+    artifact_versions = await artifact_service.list_versions(
         app_name=app_name,
         user_id=user_id,
         session_id=session_id,
@@ -70,7 +70,7 @@ def store_uploaded_image_as_artifact(
 
         return image_hash_id, image_byte
 
-    artifact_service.save_artifact(
+    await artifact_service.save_artifact(
         app_name=app_name,
         user_id=user_id,
         session_id=session_id,
@@ -83,7 +83,7 @@ def store_uploaded_image_as_artifact(
     return image_hash_id, image_byte
 
 
-def download_image_from_gcs(
+async def download_image_from_gcs(
     artifact_service: GcsArtifactService,
     app_name: str,
     user_id: str,
@@ -106,7 +106,7 @@ def download_image_from_gcs(
         tuple[str, str] | None: A tuple containing (base64_encoded_data, mime_type), or None if download fails
     """
     try:
-        artifact = artifact_service.load_artifact(
+        artifact = await artifact_service.load_artifact(
             app_name=app_name,
             user_id=user_id,
             session_id=session_id,
@@ -128,7 +128,7 @@ def download_image_from_gcs(
         return None
 
 
-def format_user_request_to_adk_content_and_store_artifacts(
+async def format_user_request_to_adk_content_and_store_artifacts(
     request: ChatRequest, app_name: str, artifact_service: GcsArtifactService
 ) -> types.Content:
     """Format a user request into ADK Content format.
@@ -148,7 +148,7 @@ def format_user_request_to_adk_content_and_store_artifacts(
     for data in request.files:
         # Process the image and add string placeholder
 
-        image_hash_id, image_byte = store_uploaded_image_as_artifact(
+        image_hash_id, image_byte = await store_uploaded_image_as_artifact(
             artifact_service=artifact_service,
             app_name=app_name,
             user_id=request.user_id,
